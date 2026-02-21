@@ -2,27 +2,17 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-// app.use("/", (req, res) => {
+// app.use("/user", (req, res) => {
 //   res.send("Hello from the Dashboard");
 // });
 
-// app.use("/test", (req, res) => {
-//   res.send("Hello from the code crush");
-// });
-
-// app.use("/main", (req, res) => {
-//   res.send("another route");
-// });
-app.get("/", (req, res) => {
-  res.send("Hello from the Dashboard");
+app.get("/user:userId/:name/:password", (req, res) => {
+  console.log(req.params);
+  res.send({ firstName: "Ramit", lastName: "Roshan" });
 });
 
-app.get("/test", (req, res) => {
-  res.send("Hello from the code crush");
-});
-
-app.get("/main", (req, res) => {
-  res.send("another route");
+app.post("/user", (req, res) => {
+  res.send("Data successfully saved to the database");
 });
 
 //starting the server
