@@ -2,18 +2,23 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-// app.use("/user", (req, res) => {
-//   res.send("Hello from the Dashboard");
-// });
+const { adminAuth, userAuth } = require("./src/Middlewares/auth");
 
-app.get("/user:userId/:name/:password", (req, res) => {
-  console.log(req.params);
-  res.send({ firstName: "Ramit", lastName: "Roshan" });
+app.use("/admin", adminAuth);
+
+app.get("/user", userAuth, (req, res) => {
+  res.send("User Data Sent");
 });
 
-app.post("/user", (req, res) => {
-  res.send("Data successfully saved to the database");
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All Data Sent");
 });
+
+app.get("/admin/deleteUser", (req, res) => {
+  //logic of checking, if the request is authorized
+  res.send("Deleted a user");
+});
+
 
 //starting the server
 app.listen(port, () => {
