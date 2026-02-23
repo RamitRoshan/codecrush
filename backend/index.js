@@ -3,6 +3,7 @@ const connectDB = require("./src/config/database");
 const app = express();
 const port = 3000;
 
+require("dotenv").config();
 
 
 //db should be connected before starting the server
@@ -14,7 +15,7 @@ connectDB()
     });
   }) 
   .catch((err) => {
-    console.error("Database cannot be connected");
+    console.error("Database connection failed:", err.message);
   });
 
 //starting the server
