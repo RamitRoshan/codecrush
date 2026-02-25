@@ -181,3 +181,9 @@ VITE_API_URL=http://localhost:5000
 **👨‍💻 Developed By**
 
 ~ Ramit Roshan
+
+
+
+### Library
+
+- npm install validator
