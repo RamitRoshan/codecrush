@@ -4,12 +4,15 @@ const app = express();
 const User = require("./src/models/user");
 const { validateSignupData } = require("./src/utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 
 const port = 3000;
 require("dotenv").config();
 
 //middleware
 app.use(express.json());
+//cookies middleware
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -50,6 +53,8 @@ app.post("/login", async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
+      // add the token to cookie and send the response back to the user
+      res.cookie("token", "kdjcjnccjcnfjncfjncfjcnuncc");
       res.send("Login Successful!!!!");
     } else {
       throw new Error("Invalid credentials");
@@ -60,6 +65,16 @@ app.post("/login", async (req, res) => {
     res.status(400).send("Error : " + err.message);
   }
 });
+
+//profile apis
+app.get("/profile", async (req, res) => {
+  const cookies = req.cookies;
+  res.send("Reading cookies");
+  console.log(cookies);
+});
+
+
+
 
 //Get user by email
 app.get("/user", async (req, res) => {

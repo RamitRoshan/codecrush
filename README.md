@@ -188,3 +188,5 @@ VITE_API_URL=http://localhost:5000
 
 - npm install validator
 - npm install bcrypt
+- npm i cookie-parser
+- npm i jsonwebtoken
