@@ -5,6 +5,7 @@ const User = require("./src/models/user");
 const { validateSignupData } = require("./src/utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const port = 3000;
 require("dotenv").config();
@@ -45,16 +46,23 @@ app.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
 
+    //check email in db
     const user = await User.findOne({ emailId: emailId });
     //if user is not present
     if (!user) {
       throw new Error("Invalid credentials");
     }
 
+    //check password is valid or not
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
+      //create  a JWT token, to hide the data inside the token, "999@Ramit" is a secret key as a password
+      const token = await jwt.sign({ _id: user._id }, "999@Ramit", {
+        expiresIn: "1d",
+      }); 
+
       // add the token to cookie and send the response back to the user
-      res.cookie("token", "kdjcjnccjcnfjncfjncfjcnuncc");
+      res.cookie("token", token);
       res.send("Login Successful!!!!");
     } else {
       throw new Error("Invalid credentials");
@@ -68,13 +76,33 @@ app.post("/login", async (req, res) => {
 
 //profile apis
 app.get("/profile", async (req, res) => {
-  const cookies = req.cookies;
-  res.send("Reading cookies");
-  console.log(cookies);
+  try {
+    const cookies = req.cookies;
+
+    //object destructuring (const token = cookies.token)
+    const { token } = cookies;
+    //if token is not present
+    if (!token) {
+      throw new Error("Invalid Token");
+    }
+
+    //validate my token
+    const decodedMessage = await jwt.verify(token, "999@Ramit");
+
+    const { _id } = decodedMessage;
+    // console.log("Logged In user is: " + _id);
+
+    const user = await User.findById(_id);
+    //if token is valid and user does not exist
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
+  }
 });
-
-
-
 
 //Get user by email
 app.get("/user", async (req, res) => {
