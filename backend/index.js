@@ -2,6 +2,9 @@ const express = require("express");
 const connectDB = require("./src/config/database");
 const app = express();
 const User = require("./src/models/user");
+const { validateSignupData } = require("./src/utils/validation");
+const bcrypt = require("bcrypt");
+
 const port = 3000;
 require("dotenv").config();
 
@@ -9,15 +12,28 @@ require("dotenv").config();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  //creating a new instance of the User model
-  const user = new User(req.body);
-
-  //instance of model and using user.save(), user save data in the database model
   try {
+    //validation of data
+    validateSignupData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    //Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    //creating a new instance of the User model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
+    //instance of model and using user.save(), user save data in the database model
     await user.save();
     res.send("User Added successfully!");
   } catch (err) {
-    res.status(400).send("Error saving the user:" + err.message);
+    res.status(400).send("Error :" + err.message);
   }
 });
 
@@ -77,7 +93,7 @@ app.patch("/user/:userId", async (req, res) => {
     if (!isUpdateAllowed) {
       throw new Error("update not allowed");
     }
-    if (data?.skills.length > 10) {    
+    if (data?.skills.length > 10) {
       throw new Error("Skills cannot be more than 10");
     }
 
