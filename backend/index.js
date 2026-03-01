@@ -6,6 +6,7 @@ const { validateSignupData } = require("./src/utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./src/middlewares/auth");
 
 const port = 3000;
 require("dotenv").config();
@@ -59,7 +60,7 @@ app.post("/login", async (req, res) => {
       //create  a JWT token, to hide the data inside the token, "999@Ramit" is a secret key as a password
       const token = await jwt.sign({ _id: user._id }, "999@Ramit", {
         expiresIn: "1d",
-      }); 
+      });
 
       // add the token to cookie and send the response back to the user
       res.cookie("token", token);
