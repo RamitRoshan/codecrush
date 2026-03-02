@@ -17,7 +17,7 @@ const requestRouter = require("./src/routes/request");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
-app.use("/", requestRouter);
+app.use("/", requestRouter); 
 
 //db should be connected before starting the server
 connectDB()

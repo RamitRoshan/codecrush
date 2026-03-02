@@ -1,6 +1,6 @@
 const validator = require("validator");
 
-//validation fns 
+//validation fns
 const validateSignupData = (req) => {
   //we'll extract these things from req.body
   const { firstName, lastName, emailId, password } = req.body;
@@ -16,4 +16,21 @@ const validateSignupData = (req) => {
   }
 };
 
-module.exports = {validateSignupData};
+const validateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName",
+    "emailId",
+    "age",
+    "gender",
+    "about",
+    "photoUrl",
+    "skills",
+  ];
+  //loopin all these fields (boolean)
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    allowedEditFields.includes(field),
+  );
+  return isEditAllowed; //return boolean value
+};
+module.exports = { validateSignupData, validateEditProfileData };

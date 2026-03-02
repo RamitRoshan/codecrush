@@ -1,10 +1,10 @@
 const express = require("express");
 const authRouter = express.Router();
-const {validateSignupData} = require("../utils/validation");
-const User = require("../models/user"); 
+const { validateSignupData } = require("../utils/validation");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
-//signup api for signing the user 
+//signup api for signing the user
 authRouter.post("/signup", async (req, res) => {
   try {
     //validation of data
@@ -31,13 +31,12 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
-
 //login APIs
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
 
-    //check email in db
+    //check email in db for login
     const user = await User.findOne({ emailId: emailId });
     //if user is not present
     if (!user) {
@@ -65,6 +64,13 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-
+//logout APIs
+authRouter.post("/logout", async (req, res) => {
+  //set token null and expires the cookies just right there(curr time)
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+  res.send("user logged out successfully!");
+});
 
 module.exports = authRouter;
