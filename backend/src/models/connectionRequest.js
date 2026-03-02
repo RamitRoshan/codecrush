@@ -23,6 +23,10 @@ const connectionRequestSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+//compound index, to make it fast with fromUserId we have to add toUserId
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
+
+
 connectionRequestSchema.pre("save", function () {
   const connectionRequest = this;
   //before saving,it will check if the fromUserId is same as toUserId

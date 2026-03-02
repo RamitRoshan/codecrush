@@ -81,6 +81,9 @@ const userSchema = new Schema(
   { timestamps: true },
 );
 
+//compound index(find user with firstName and lastName), 1 means ascending order
+userSchema.index({ firstName: 1, lastName: 1 });
+
 userSchema.methods.getJWT = async function () {
   //this -> "this" will represent particular user instance
   const user = this;
