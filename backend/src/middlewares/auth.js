@@ -8,7 +8,8 @@ const userAuth = async (req, res, next) => {
     //checking, if token is present or not
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("Token is not valid");
+      //throw new Error("Token is not valid");
+      return res.status(401).send("Please Login or Signup");
     }
 
     //validate the token

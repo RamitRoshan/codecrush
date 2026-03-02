@@ -54,7 +54,8 @@ requestRouter.post(
       //save this connection req models in db
       const data = await connectionRequest.save();
       res.json({
-        message: "Connection Request Sent Successfully!",
+        message:
+          req.user.firstName + " is " + status + " in " + toUser.firstName,
         data,
       });
     } catch (err) {
