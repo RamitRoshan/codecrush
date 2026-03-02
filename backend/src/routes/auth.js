@@ -1,7 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
-const { validateSignupData } = require("./src/utils/validation");
-const User = require("./src/models/user"); 
+const {validateSignupData} = require("../utils/validation");
+const User = require("../models/user"); 
 const bcrypt = require("bcrypt");
 
 //signup api for signing the user 

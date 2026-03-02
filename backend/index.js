@@ -1,7 +1,7 @@
 const express = require("express");
 const connectDB = require("./src/config/database");
 const app = express();
-const cookieParser = require("cookie-parser"); 
+const cookieParser = require("cookie-parser");
 
 const port = 3000;
 require("dotenv").config();
@@ -11,12 +11,13 @@ app.use(express.json());
 //cookies middleware
 app.use(cookieParser());
 
+const authRouter = require("./src/routes/auth");
+const profileRouter = require("./src/routes/profile");
+const requestRouter = require("./src/routes/request");
 
-
-
-
-
-
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 
 //db should be connected before starting the server
 connectDB()

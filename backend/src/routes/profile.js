@@ -1,6 +1,6 @@
 const express = require("express");
 const profileRouter = express.Router();
-const { userAuth } = require("./src/middlewares/auth");
+const { userAuth } = require("../middlewares/auth");
 
 
 //profile apis

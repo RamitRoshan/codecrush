@@ -1,6 +1,6 @@
 const express = require("express");
 const requestRouter = express.Router();
-const { userAuth } = require("./src/middlewares/auth");
+const { userAuth } = require("../middlewares/auth");
 
 //send connection request APIs (hit the APIs only when user is loggedIn)
 requestRouter.post("/sendConnectionRequest", userAuth, async (req, res) => {
@@ -11,7 +11,5 @@ requestRouter.post("/sendConnectionRequest", userAuth, async (req, res) => {
   console.log("sending a connection request");
   res.send(user.firstName + " sent the connection request");
 });
-
-
 
 module.exports = requestRouter;
