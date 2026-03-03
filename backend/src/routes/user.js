@@ -58,6 +58,52 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   }
 });
 
-//  GET /user/feed - Gets you the profiles of other users on platform
+//  GET /user/feed - Gets you the profiles of other users on platform....
+userRouter.get("/user/feed", userAuth, async (req, res) => {
+  try {
+    /* User should see all the user cards except:
+        0. his own card
+        1. his connections
+        2. ignored people
+        3. already sent the connection request
+        4. someone reject or accept the connection requests
+        */
+
+    //check user is loggedIn or not(userAuth)
+    const loggedInUser = req.user;
+
+    //reading query params
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    //find all collection requests(either I have sent, or received)
+    const connectionRequests = await ConnectionRequestModel.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    // Set Data-structure and it's an array
+    const hideUsersFromFeed = new Set();
+    connectionRequests.forEach((req) => {
+      hideUsersFromFeed.add(req.fromUserId.toString());
+      hideUsersFromFeed.add(req.toUserId.toString());
+    });
+
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUsersFromFeed) } }, //$nin - not in this array
+        { _id: { $ne: loggedInUser._id } }, //$ne- not equal to
+      ],
+    })
+      .select(USER_SAFE_DATA) //select will only select the field which we want
+      .skip(skip)
+      .limit(limit);
+
+    res.send(users);
+  } catch (error) {
+    res.status(400).send("ERROR: " + error.message);
+  }
+});
 
 module.exports = userRouter;
