@@ -64,7 +64,49 @@ requestRouter.post(
   },
 );
 
-// POST /request/send/ignored/:toUserId APIs
-// requestRouter.post("");
+// POST /request/review/:status/:requestId APIs(work for accept as well as rejects)
+//userAuth middleware, for loggedIn like: user should loggedIn to send connection requests
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      //check user is loggedIn or not
+      const loggedInUser = req.user;
+      //extract status from req.params
+      const { status, requestId } = req.params;
+
+      //validations
+
+      //status check
+      const allowedStatus = ["accepted", "rejected"];
+      //if not allowed status(accpted,rejected)then, throw error
+      if (!allowedStatus.includes(status)) {
+        return res.status(400).json({ message: "Status is not allowed!!" });
+      }
+      //checking requestId is present on db or not..
+      //if gaurav is loggedIn then toUserId should be of gaurav  & status should be interested
+      const connectionRequest = await ConnectionRequestModel.findOne({
+        _id: requestId, // request Id should be valid
+        toUserId: loggedInUser._id,
+        status: "interested",
+      });
+      //if we don't find connection req
+      if (!connectionRequest) {
+        return res
+          .status(404)
+          .json({ message: "Connection request not found!!" });
+      }
+
+      //modifying the status
+      connectionRequest.status = status;
+
+      const data = await connectionRequest.save();
+      res.json({ message: "Connection request " + status, data });
+    } catch (err) {
+      res.status(400).send("ERROR: " + err.message);
+    }
+  },
+);
 
 module.exports = requestRouter;
