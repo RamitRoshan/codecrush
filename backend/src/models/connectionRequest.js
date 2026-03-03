@@ -5,6 +5,8 @@ const connectionRequestSchema = new mongoose.Schema(
   {
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      //reference to user collections
+      ref: "User", //building relation btw 2 schemas
       required: true,
     },
     toUserId: {
@@ -25,7 +27,6 @@ const connectionRequestSchema = new mongoose.Schema(
 
 //compound index, to make it fast with fromUserId we have to add toUserId
 connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
-
 
 connectionRequestSchema.pre("save", function () {
   const connectionRequest = this;
