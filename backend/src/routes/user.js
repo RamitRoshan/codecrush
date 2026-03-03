@@ -29,4 +29,35 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   }
 });
 
+//connection APIs(when I sent request then it give res, who accepted my request)
+userRouter.get("/user/connections", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    //get all the connections, both status: accepted but like: elon accpted request bt he send request to donald trump also
+    const connectionRequests = await ConnectionRequestModel.find({
+      $or: [
+        { toUserId: loggedInUser._id, status: "accepted" },
+        { fromUserId: loggedInUser._id, status: "accepted" },
+      ],
+    })
+      .populate("fromUserId", USER_SAFE_DATA)
+      .populate("toUserId", USER_SAFE_DATA);
+
+    //clean-up unneccssary and modify data
+    const data = connectionRequests.map((row) => {
+      //checking each rows
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+        return row.toUserId;
+      }
+      return row.fromUserId;
+    });
+
+    res.json({ data });
+  } catch (error) {
+    res.status(400).send("ERROR :" + error.message);
+  }
+});
+
+//  GET /user/feed - Gets you the profiles of other users on platform
+
 module.exports = userRouter;
