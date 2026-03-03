@@ -58,7 +58,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   }
 });
 
-//  GET /user/feed - Gets you the profiles of other users on platform....
+//  GET /user/feed - Gets you the profiles of other users on platform.
 userRouter.get("/user/feed", userAuth, async (req, res) => {
   try {
     /* User should see all the user cards except:
