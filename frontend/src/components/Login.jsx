@@ -1,22 +1,30 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+import {useNavigate} from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
 
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailId, setEmailId] = useState("ramit@gmail.com");
+  const [password, setPassword] = useState("Ramit@123");
   // const [firstName, setFirstName] = useState("");
   // const [lastName, setLastName] = useState("");
   // const [isLoginFrom, setIsLoginFrom]  = useState(true);
   // const [error, setError] = useState("");
+  const dispatch = useDispatch(); //storing
+  const navigate = useNavigate();
 
   const handleLogin = async() => {
     try{
-      const res = await axios.post("http://localhost:3000/login", {
+      const res = await axios.post( BASE_URL+ "/login", {
         emailId, password,
       },
       {withCredentials: true} //to access cookies 
-    );
+    ); 
+    dispatch(addUser(res.data));
+    navigate("/"); //navigate to / path
     }catch(err){
       console.log(err);
     }
@@ -67,5 +75,4 @@ const Login = () => {
 
 export default Login
 
-
-//5-56
+ 
