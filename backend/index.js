@@ -2,11 +2,18 @@ const express = require("express");
 const connectDB = require("./src/config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const port = 3000;
 require("dotenv").config();
 
 //middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  },),
+);
 app.use(express.json());
 //cookies middleware
 app.use(cookieParser());
@@ -18,7 +25,7 @@ const userRouter = require("./src/routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
-app.use("/", requestRouter); 
+app.use("/", requestRouter);
 app.use("/", userRouter);
 
 //db should be connected before starting the server

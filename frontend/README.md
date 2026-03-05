@@ -26,7 +26,11 @@ npm i -D daisyui@latest
 #### library
 
 - npm install react-router-dom
+- npm install axios
+- CORS - install cors in backend => add middleware to app with configuration: origin , credintials : true
+- Whenever you are making an API call so pass, axios =>  {withCredentials: true} //to access cookies  ( if we don't pass then authentication will going to fail)
 - We will create a body component(which is a main components) and under this , we will write rest component like: Navbar, Login
+
 
 Body
     NavBar
@@ -36,3 +40,14 @@ Body
     Route=/profile => Profile
 
 - <Outlet/> => any children routes of body, will render over here. 
+- 127.0.0.1 (this is exactly same as localhost)
+
+
+### Redux Toolkit
+
+Install Redux Toolkit and React-Redux
+Add the Redux Toolkit and React-Redux packages to your project:
+
+```javascript
+npm install @reduxjs/toolkit react-redux 
+```
