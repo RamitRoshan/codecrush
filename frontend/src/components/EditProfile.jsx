@@ -63,8 +63,7 @@ const EditProfile = ({user}) => {
                 <span className="label-text">Last Name:</span> 
               </div>
               <input
-                type="text"
-                // placeholder="Type here"
+                type="text" 
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 className="input input-bordered w-full max-w-xs"
