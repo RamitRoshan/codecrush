@@ -30,6 +30,13 @@ const Feed = () => {
     getFeed();
   }, []);
 
+  //edge cases(feed is empty)
+  if(!feed) return;
+
+  if(feed.length <= 0){
+    return <h1 className="flex justify-center my-10 font-semibold">No new users founds!</h1>
+  }
+
   return (
     feed && (
     <div className="flex justify-center my-10">
