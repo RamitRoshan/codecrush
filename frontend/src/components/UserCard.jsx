@@ -1,6 +1,21 @@
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+
 const UserCard = ({user}) => {
 
     const { _id, firstName, lastName, age, gender, about, photoUrl, skills } = user; 
+
+    const handleSendRequest = async (status, userId) => {
+        try{
+            //{} -> empty, 2nd parameter is data which we have to pass in POSTand we dont have so empty
+            const res = await axios.post(BASE_URL + "/request/send/" + status + "/" + userId,
+                {},
+                {withCredentials: true},
+            );
+        }catch(err){
+            throw new Error("Send Request failed: " + err.message);
+        }
+    }
 
     return ( 
         <div className="card bg-base-300 w-96 shadow-xl">
@@ -22,4 +37,4 @@ const UserCard = ({user}) => {
     );
 }
 
-export default UserCard
+export default UserCard;
