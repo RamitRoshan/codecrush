@@ -16,6 +16,7 @@ const Requests = () => {
                 {},
                 {withCredentials: true},
             );
+            console.log(res);
             dispatch(removeRequest(_id));
         }catch(err){
             throw new Error("Review Request failed: " + err.message);
