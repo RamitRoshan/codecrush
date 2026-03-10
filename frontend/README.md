@@ -149,6 +149,91 @@ ubuntu@ip-172-31-41-40:/var/www/html$
 
 #### When you change something on code and push to GitHub then you have to push this into Remote(Git Bash)
 
-1. git log 
-2. git pull
+1. git log  (do on root directory codecrush)
+2. git pull (or git pull origin main)
 3. (again we can run: git log , to check we pulled the newchanged or not)
+4. then go (cd backend)
+5. again install dependencies(npm install)
+6. once you will write `git log` then second to exit press `q`
+7. when we will run the server using (npm start), it will fail because we are using .env where all the secret keys is there .
+8. so We have to create .env file in remote using:
+    - `nano .env`
+    - THen write this:
+    ```
+    PORT="3000"
+    DB_URL="mongodb+srv://ramitroshan:TYFseLnRunGTNtik@codecrs.uw65imz.mongodb.net/codeCrush"
+    JWT_SECRET="CodeCrush@123"
+    ``` 
+    - Save the file (`cntrl + x) then Y Enter
+    - Again write this to start the server : `npm start`
+
+- Now go to aws instance(https://eu-north-1.console.aws.amazon.com/ec2/home?region=eu-north-1#InstanceDetails:instanceId=i-0401cb308e249ff98) , then went too security and click on the link og  security grous and then edit enbounce rules then do `Add rule` and add your local port `3000` and add customs where we have to write `0.0/0`
+
+- Public IP : (13.62.104.47) and we can add now backend port (**13.62.104.47:3000**)
+- When we write : `http://13.62.104.47:3000/user/feed` then it will show **Please Login or Signup**
+- Here like in vs code terminal when we stop server or exit then it doesnot show any api in backend , **same happens in GitBash**. so once we stop the terminal in Git Bash then this link does not work (`13.62.104.47:3000`)
+- We have to do something so that `npm start` keeps running in the backend.
+- For this we will use **`pm2`** package.
+    - [pm2](https://pm2.keymetrics.io/) 
+    - **pm2** says:, **PM2** is a daemon process manager that will help you manage and keep your **application online 24/7.**
+    - Install **pm2** : **`npm install pm2 -g`**
+    > ubuntu@ip-172-31-41-40:~/codecrush/backend$ npm install pm2 -g
+
+    - Now to start the server after installing pm2, we will use : `pm2 start npm -- start` ((must give space -- start)this will run via a process manager and it will run 24/7 in the background)
+
+
+- This is a public IP instance of aws (13.62.104.47) and we added this in the mongodb Atlas network service to make db safe , so from now only from local computer and from aws we can get access of it.
+- **To do copy paste in GitBash we use `shift + Insert`**
+
+![GitBash Images](image.png)
+
+- In this image pm2 is passed, suppose it shows it failed so how we will saw this, then we will use: 
+    - **`pm2 logs`**
+    - Suppose we write `pm2 start npm -- start` and our application does not start then to check it, we will run this commands: `pm2 logs`
+    - Write now the name of pm2 is **npm**.
+    - To check list we use:  pm2 list
+    - To remove or flush we use : pm2 flush <name>(pm2 flush npm)
+    - To stop we use: `pm2 stop <name>`
+    - To delete we use: `pm2 delete <name>`
+
+- To run our applications 24/7 we need to run this inside backend: `pm2 start npm -- start`
+
+
+## Connection frontend with backend:
+
+- Frontend is running on IP: http://13.62.104.47/
+- Backend is running on: http://13.62.104.47:3000/(http://13.62.104.47:3000/user/feed)
+
+1. if we do mapping (DNS mapping) with Domain name.
+    - Domain name = codecrush.com =>  13.62.104.47
+    - Frontend running on = codecrush.com
+    - Backend running on = codecrush.com:3000 => codecrush.com/api (lets see how we map port(:3000) no. with path(/api) )
+    - For that we will use [nginx proxy pass]
+    - nginx also works as a load balancer
+    - Command we will use here inside the remote in GitBash:
+        - `sudo nano /etc/nginx/sites-available/default`  (here edit server_name 13.62.104.47; with IP address)
+        - **nginx config:** (Also add reverse proxy)
+            -  server_name 13.62.104.47; 
+        ```
+        location /api/ {
+        proxy_pass http://localhost:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        }
+        ```  
+![alt text](image-1.png)
+
+- After adding these all save with (cntrl + x)
+- Ctrl + X
+   Y
+   Enter
+
+- Again restart `nginx`
+    - sudo systemctl restart nginx
+    - Now its working and frontend and backend mapped (`http://13.62.104.47/api/`)
+
+- Modify the BASEURL in frontend project to "/api"
+    - export const BASE_URL="/api";   
