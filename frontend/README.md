@@ -59,7 +59,8 @@ npm install @reduxjs/toolkit react-redux
 - signup on AWS
 - Launch Instance
 - chmod 400 "codeCrush-secret.pem" (run this command on gitbash, on download(cd Downloads))
-- ssh -i "codeCrush-secret.pem" ubuntu@ec2-13-62-104-47.eu-north-1.compute.amazonaws.com (whenever we have to  start the aws in gitbash then this command we have to use)
+- `ssh -i "codeCrush-secret.pem" ubuntu@ec2-13-62-104-47.eu-north-1.compute.amazonaws.com` 
+(whenever we have to  start the aws in gitbash then this command we have to use)
 - Install Nodejs
     - curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
     - sudo apt install -y nodejs
@@ -134,3 +135,20 @@ ubuntu@ip-172-31-41-40:/var/www/html$
 
 
 ## Backend Deployment:
+
+- Open Git Bash 
+- go to Downloads(cd Downloads)
+- Then run this commands to start the system:
+    - `ssh -i "codeCrush-secret.pem" ubuntu@ec2-13-62-104-47.eu-north-1.compute.amazonaws.com` 
+
+- Go to codecrush (cd codecrush)
+- Now go Backend(cd backend)
+- Install the required packages(npm install)
+- Move to vs code and go to `backend` directory and run this commands to start the server for production :
+
+
+#### When you change something on code and push to GitHub then you have to push this into Remote(Git Bash)
+
+1. git log 
+2. git pull
+3. (again we can run: git log , to check we pulled the newchanged or not)
