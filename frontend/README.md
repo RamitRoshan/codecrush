@@ -279,6 +279,7 @@ npm install
 ```
 pm2 restart npm
 ```
+Note: write `sudo nano .env` if u have to add something new in the env in remote(GitBash).
 
 ## Quick Commands Summary
 
