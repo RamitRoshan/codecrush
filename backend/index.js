@@ -10,13 +10,17 @@ const port = process.env.PORT || 5000;
 //middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://codecrush.cloud"
+    ],
     credentials: true,
   }),
 );
 app.use(express.json());
 //cookies middleware
 app.use(cookieParser());
+app.set("trust proxy", 1);
 
 const authRouter = require("./src/routes/auth");
 const profileRouter = require("./src/routes/profile");

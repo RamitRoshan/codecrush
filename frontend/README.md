@@ -299,6 +299,15 @@ git pull
 cd backend
 pm2 restart npm
 ```
+
+```
+cd ~/codecrush
+git pull
+cd backend
+npm install
+pm2 restart codecrush-backend
+pm2 save
+```
 ---
 
 ## Adding a custom Domain name:
