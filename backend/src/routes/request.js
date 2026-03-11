@@ -4,6 +4,8 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequestModel = require("../models/connectionRequest");
 const User = require("../models/user");
 
+const sendEmail = require("../utils/sendEmail");
+
 //send connection req APIs POST /request/send/:status/:toUserId(dynamic inter, reject anything can be there), userAuth(middleware ,loggedIn userAuth)
 requestRouter.post(
   "/request/send/:status/:toUserId",
@@ -53,6 +55,12 @@ requestRouter.post(
       });
       //save this connection req models in db
       const data = await connectionRequest.save();
+
+      const emailRes = await sendEmail.run("A new friend request from " + req.user.firstName,
+        req.user.firstName + " is " + status + " in " + toUser.firstName
+      );
+      console.log(emailRes);
+
       res.json({
         message:
           req.user.firstName + " is " + status + " in " + toUser.firstName,

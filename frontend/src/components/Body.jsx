@@ -22,12 +22,19 @@ const Body = () => {
       });
       dispatch(addUser(res.data));
 
-    }catch(err){
-      if(err.status === 401){
+    }
+    catch(err){
+      if(err.response && err.response.status === 401){
         navigate("/login");
       }
       console.error(err);
     }
+    // catch(err){
+    //   if(err.status === 401){
+    //     navigate("/login");
+    //   }
+    //   console.error(err);
+    // }
   };
   
   //after the component load(initial render), then this useEffect will be called

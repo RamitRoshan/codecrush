@@ -21,7 +21,7 @@ const Feed = () => {
       });
       dispatch(addFeed(res.data));
     }catch(err){
-      throw new Error("Get Feed failed: " + err.message);
+      console.error("Get Feed failed:", err);
     }
   }
 

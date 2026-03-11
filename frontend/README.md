@@ -236,4 +236,261 @@ ubuntu@ip-172-31-41-40:/var/www/html$
     - Now its working and frontend and backend mapped (`http://13.62.104.47/api/`)
 
 - Modify the BASEURL in frontend project to "/api"
-    - export const BASE_URL="/api";   
+    - export const BASE_URL="/api";  
+    - push code to github from local and from remote(Git Bash)
+    - (use git log, use q to escape and finally git pull origin main)
+
+
+## If we changed something on frontend then again we have to deplaoy with same methods
+
+### steps to follow again:
+
+1. cd codecrush
+2. cd frontend
+3. npm run build
+4. `sudo scp -r dist/* /var/www/html/` (copied, now chaned and nginx will show new update one)
+
+
+## If we changed something on **backend** then again we have to deplaoy with same methods
+
+### steps to follow again:
+
+**1️⃣ Push code from local to GitHub**
+```
+git add .
+git commit -m "backend update"
+git push origin main
+```
+**2️⃣ Pull code on server**
+```
+cd ~/codecrush
+git pull origin main
+```
+**3️⃣ Go to backend**
+```
+cd backend
+```
+> If dependencies changed (package.json updated):
+```
+npm install
+```
+
+**4️⃣ Restart backend with PM2**
+```
+pm2 restart npm
+```
+
+## Quick Commands Summary
+
+**Frontend change:**
+```
+cd ~/codecrush
+git pull
+cd frontend
+npm run build
+sudo cp -r dist/* /var/www/html/
+```
+
+**Backend change:**
+```
+cd ~/codecrush
+git pull
+cd backend
+pm2 restart npm
+```
+---
+
+## Adding a custom Domain name:
+
+- I wants cloudflare to manage DNS of my domain name which I purchase from GoDaddy
+- Purchased domain name from godaddy
+- signup on cloudflare and add a new domain name
+- change the nameservers on godaddy and point it to cloudflare.
+- wait for sometime till nameservers updated.
+- Read about Registarar domain name
+- Enable SSL in cloudflare, to make it more strong.
+- Enable SSL for website
+
+---
+# Managing DNS: GoDaddy vs Cloudflare
+
+**1. Managing DNS in GoDaddy**
+
+When we buy a domain from GoDaddy, it already provides DNS management.
+
+This means we can directly connect our domain to a server (like an AWS EC2 instance) using DNS records.
+
+**Example flow:**
+```
+User → Domain (GoDaddy DNS) → EC2 Server → Nginx → Backend/Fronten
+```
+
+**Example DNS records in GoDaddy:**
+
+| Type | Name | Value         |
+| ---- | ---- | ------------- |
+| A    | @    | EC2 Public IP |
+| A    | www  | EC2 Public IP |
+
+**Explanation:**
+
+- @ → main domain (codecrush.cloud)
+
+- www → www.codecrush.cloud
+
+After this, the domain will point to our server.
+
+So GoDaddy DNS is enough to make a website live.
+
+
+## 2. Why Many Developers Use Cloudflare
+
+Even though GoDaddy DNS works, developers often move DNS management to Cloudflare because it provides extra benefits.
+
+**Key advantages of Cloudflare:**
+
+**1. Free SSL (HTTPS):** <br>
+Cloudflare can automatically provide HTTPS for the website.
+
+<br>
+
+2. **Security (DDoS protection)** <br>
+Cloudflare protects the server from attacks.
+
+<br>
+
+3. **CDN (Content Delivery Network):** <br>
+Website content is cached on global servers, making the site faster for users worldwide.
+
+<br>
+
+4. **Hide server IP:** <br>
+Users see Cloudflare's IP instead of the actual EC2 IP.
+<br>
+
+5. **Performance optimization:** <br>
+Cloudflare can compress files, cache responses, and improve loading speed.
+
+<br>
+
+**Example flow when using Cloudflare:**
+
+```
+User → Cloudflare → EC2 Server → Nginx → Backend
+```
+
+## 3. Steps to Connect GoDaddy Domain with Cloudflare
+
+When we move DNS management to Cloudflare, **we usually perform these steps:**
+
+**Step 1 – Add domain in Cloudflare**
+
+Add the domain in Cloudflare dashboard.
+
+**Step 2 – Cloudflare gives 2 nameservers**
+
+Example:
+
+```
+alex.ns.cloudflare.com
+lisa.ns.cloudflare.com
+```
+
+**Step 3 – Paste these nameservers in GoDaddy**
+
+**In GoDaddy:**
+```
+Domain Settings → Nameservers → Custom
+```
+
+> Then paste the two nameservers from Cloudflare.
+
+**This tells the internet:**
+ - This domain's DNS is now managed by Cloudflare
+
+## 4. Final Architecture
+
+**Without Cloudflare:**
+
+```
+User
+ ↓
+GoDaddy DNS
+ ↓
+EC2 Server
+ ↓
+Nginx
+ ↓
+Node Backend + Frontend
+```
+
+**With Cloudflare:**
+
+```
+User
+ ↓
+Cloudflare (Security + CDN + SSL)
+ ↓
+EC2 Server
+ ↓
+Nginx
+ ↓
+Node Backend + Frontend
+```
+
+
+We can manage DNS directly in GoDaddy, but many developers move DNS to Cloudflare because it provides free SSL, CDN, DDoS protection, and performance optimization. To connect Cloudflare with GoDaddy, we simply replace the domain's nameservers in GoDaddy with the two nameservers provided by Cloudflare.
+
+
+
+##  Sending Email via SES - Amazon Simple Email Service [Amazon SES](https://aws.amazon.com/ses/)
+
+1. Sign in to console 
+2. Now choose Mumbai region
+3. On the left side search bar Search: IAM (Identity and Access Management (IAM))
+4. Go there, create a user, click on user and it went to create a new user 
+5. On User Detials pages Give user name like: **ses-user** and click on next. 
+6. Now on the next page, click on `Attach Policy Directly` and in the Permissions policies search: **AmazonSESFullAccess** and click on this, **AmazonSESFullAccess**(it will give all access like send email, get email, read email). Now click on next and click on `create new user`
+7. Now a new user will be created 
+8. Now go AWS console back and search: [**Amazon Simple Email Service**](https://ap-south-1.console.aws.amazon.com/ses/home?region=ap-south-1#/account) and went to its dashboard.
+9. Now set-up  ses and click on [`View Get Set Up page`](https://ap-south-1.console.aws.amazon.com/ses/home?region=ap-south-1#/onboarding-wizard)
+10. Now verify it by sending domain name: (codecrush.cloud), and complete all the required process and then went to configuration -> IIdentities and there click on your Domain name(codecrush.cloud) [Identities](https://ap-south-1.console.aws.amazon.com/ses/home?region=ap-south-1#/identities/codecrush.cloud)
+    
+11. Here I will get  this error (`Action required
+To verify ownership of this identity, DKIM must be configured in the domain's DNS settings using the CNAME records provided.`)
+
+12. There are the 3 CNAME which I have to set-up on our DNS Settings;
+
+(![Publish DNS records CNAME](image-2.png))
+
+13. Amazon SES wants to verify that codecrush.cloud is my domain, then it will create an identity and it will give an access to send emails. I have to verify it like I am the owner of this domain name.
+14. Now go to [cloudflare](https://dash.cloudflare.com/fb152839c2c2bc0a1e56b82d0b2a4a42/codecrush.cloud/dns/records) website, and went to overview then DNS -> Records. <br>
+Here I will create few more DNS records , and turn off the proxy and this will show like this:
+![CNAME](image-3.png) . 
+<br>
+
+15. In the above image we did for one CNAME , do it same for another 2 more CNAME.
+16. Now I have set-up all 3 DNS record on our cloudflare
+![all 3 DNS CNAME](image-4.png)
+
+
+17. Now we have to wait here [Identity status](https://ap-south-1.console.aws.amazon.com/ses/home?region=ap-south-1#/identities/codecrush.cloud), here it shows `Verification pending`. once it will verify then we will move forward..
+
+18. After verification, Now go to [Get set up](https://ap-south-1.console.aws.amazon.com/ses/home?region=ap-south-1#/get-set-up) and here Go to Open Tasks here then click on `Request production access
+(Recommended)` (here we will use full capability of ses)
+
+![Request Production access](image-5.png)
+
+- click on submit button here 
+- Now went to IAM and click on user and go to security credentials, and here go down and **create acess key** and here choose `other` and click on **next button** and here there is a Description tag value which is optional leave it and click on `create access key`.
+
+![alt text](image-6.png)
+
+19.  put this Secret access key and Access key in .env file..
+20.  Now we have to write code for this: [aws ses nodejs documentation](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/ses-examples-sending-email.html). 
+<br> here go to: Sending an Email. there is a code here which helps us to send emails. ( we will use v3 i.e latest one)
+
+21. [ AWS SDK for JavaScript V3 ](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started-nodejs.html)
+22. We will use this to send email, [Amazon SES](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_ses_code_examples.html)
+23. Install AWS SDK - v3 -  [AWS Code Examples Repository](https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/ses#code-examples)
+24. create a sesClient in backend project and write code there and install : npm i @aws-sdk/client-ses
