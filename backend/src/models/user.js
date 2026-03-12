@@ -50,6 +50,13 @@ const userSchema = new Schema(
         values: ["male", "female", "others", "Male", "Female", "Others"],
         message: `{values} is not a valid gender type`,
       },
+      isPremium: {
+        type: Boolean,
+        default: false,
+      },
+      membershipType: { //showing the membership type of user, whether its silver or gold
+        type: String,
+      },
     },
     photoUrl: {
       type: String,
