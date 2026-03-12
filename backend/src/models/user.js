@@ -50,20 +50,11 @@ const userSchema = new Schema(
         values: ["male", "female", "others", "Male", "Female", "Others"],
         message: `{values} is not a valid gender type`,
       },
-      // validate(value) {
-      //   if (
-      //     !["male", "female", "others", "Male", "Female", "Others"].includes(
-      //       value,
-      //     )
-      //   ) {
-      //     throw new Error("Gender data is not a valid");
-      //   }
-      // },
     },
     photoUrl: {
       type: String,
       default:
-        "https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?t=st=1740779693~exp=1740783293~hmac=3ffc11733917c931bddeec957e8fa649e6a1590282b3210d816ccbf54dab2e94&w=900",
+        "https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Invalid Photo URL :" + value);
@@ -87,7 +78,7 @@ userSchema.index({ firstName: 1, lastName: 1 });
 userSchema.methods.getJWT = async function () {
   //this -> "this" will represent particular user instance
   const user = this;
-  const token = await jwt.sign({ _id: user._id }, "999@Ramit", {
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
   return token;

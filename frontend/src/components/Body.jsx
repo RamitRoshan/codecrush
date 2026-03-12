@@ -22,19 +22,12 @@ const Body = () => {
       });
       dispatch(addUser(res.data));
 
-    }
-    catch(err){
-      if(err.response && err.response.status === 401){
+    }catch(err){
+      if(err.status === 401){
         navigate("/login");
       }
       console.error(err);
     }
-    // catch(err){
-    //   if(err.status === 401){
-    //     navigate("/login");
-    //   }
-    //   console.error(err);
-    // }
   };
   
   //after the component load(initial render), then this useEffect will be called
@@ -60,19 +53,4 @@ const Body = () => {
 export default Body
 
 
-
-// import { Outlet } from "react-router-dom"
-// import NavBar from "./NavBar"
-// import Footer from "./Footer"
-// const Body = () => {
-//   return (
-//     <div>
-//         <NavBar/>
-//         <div className="pt-20">
-//             <Outlet/>
-//         </div> 
-//         <Footer/>
-//     </div>
-//   )
-// }
-// export default Body
+ 
