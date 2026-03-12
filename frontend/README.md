@@ -288,17 +288,12 @@ Note: write `sudo nano .env` if u have to add something new in the env in remote
 cd ~/codecrush
 git pull
 cd frontend
+npm install
 npm run build
 sudo cp -r dist/* /var/www/html/
 ```
 
 **Backend change:**
-```
-cd ~/codecrush
-git pull
-cd backend
-pm2 restart npm
-```
 
 ```
 cd ~/codecrush
