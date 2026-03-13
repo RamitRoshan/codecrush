@@ -58,7 +58,11 @@ const Premium = () =>{
                 color: '#F37254'
             },
             //when payment is successful then it will call this handler function and pass the response to it.
-            handler: verifyPremiumUser,
+            // handler: verifyPremiumUser,
+            handler: async function (response) {
+                console.log("Payment success", response);
+                await verifyPremiumUser();
+            },
         };
        
         const rzp = new window.Razorpay(options); //window.Razorpay is available because we have added the razorpay script in index.html file
