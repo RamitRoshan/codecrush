@@ -157,7 +157,7 @@ ubuntu@ip-172-31-41-40:/var/www/html$
 6. once you will write `git log` then second to exit press `q`
 7. when we will run the server using (npm start), it will fail because we are using .env where all the secret keys is there .
 8. so We have to create .env file in remote using:
-    - `nano .env`
+    - `nano . env` (sudo nano . env)
     - THen write this:
     ```
     PORT="3000"
