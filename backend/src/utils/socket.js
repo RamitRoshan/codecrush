@@ -24,7 +24,10 @@ const initializeSocket = (server) => {
     socket.on("joinChat", ({ firstName, userId, targetUserId }) => {
       //creating separrate rooms for each user, so that we can send messages to specific users.
       // const roomId = [userId, targetUserId].sort().join("_");
-      const roomId = getSecretRoomId({ userId, targetUserId });
+
+      // const roomId = getSecretRoomId({ userId, targetUserId });
+
+      const roomId = getSecretRoomId(userId, targetUserId);
 
       console.log(firstName + " User joined room: ", roomId);
       socket.join(roomId);
@@ -37,7 +40,9 @@ const initializeSocket = (server) => {
 
         // Save messages to the database here.
         try {
-          const roomId = getSecretRoomId({ userId, targetUserId });
+          // const roomId = getSecretRoomId({ userId, targetUserId });
+
+          const roomId = getSecretRoomId(userId, targetUserId);
           console.log(firstName + " " + text);
 
           // Check if userID and targetUserId are friends, if not, we should not allow them to send messages to each other. This is a security measure to prevent unauthorized access to chats.
@@ -47,10 +52,12 @@ const initializeSocket = (server) => {
             status: "accepted",
           });
           if (!connectionRequest) {
-            throw new Error("You can only send messages to your connections!");
+            // throw new Error("You can only send messages to your connections!");
+            return socket.emit(
+              "error",
+              "You can only send messages to your connections!",
+            );
           }
-
-          
 
           let chat = await Chat.findOne({
             // $all means all the people here should be the participants of the chat.
@@ -77,9 +84,11 @@ const initializeSocket = (server) => {
             timestamp: new Date(),
           });
         } catch (err) {
-          throw new Error(
-            "Failed to save message to the database: " + err.message,
-          );
+          // throw new Error(
+          //   "Failed to save message to the database: " + err.message,
+          // );
+          console.error("Error:", err.message);
+          return socket.emit("error", "Failed to send message");
         }
 
         // io.to(roomId).emit("messageReceived", { firstName, text });
