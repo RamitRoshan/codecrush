@@ -1,4 +1,4 @@
-# React + Vite
+# React
  
 - Install tailwind 
 - daisyUI(component Design library, and it's work absolutely fine with tailwidn)
@@ -12,7 +12,7 @@
 npm i -D daisyui@latest
 ```
 
-### daisyui is a Tailwind CSS plugin, not a runtime library like React.
+### DaisyUI is a Tailwind CSS plugin, not a runtime library like React.
 
 **It is:**
 

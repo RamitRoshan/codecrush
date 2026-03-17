@@ -46,18 +46,18 @@ const initializeSocket = (server) => {
           console.log(firstName + " " + text);
 
           // Check if userID and targetUserId are friends, if not, we should not allow them to send messages to each other. This is a security measure to prevent unauthorized access to chats.
-          const connectionRequest = await ConnectionRequest.findOne({
-            fromUserId: userId,
-            toUserId: targetUserId,
-            status: "accepted",
-          });
-          if (!connectionRequest) {
-            // throw new Error("You can only send messages to your connections!");
-            return socket.emit(
-              "error",
-              "You can only send messages to your connections!",
-            );
-          }
+          // const connectionRequest = await ConnectionRequest.findOne({
+          //   fromUserId: userId,
+          //   toUserId: targetUserId,
+          //   status: "accepted",
+          // });
+          // if (!connectionRequest) {
+          //   // throw new Error("You can only send messages to your connections!");
+          //   return socket.emit(
+          //     "error",
+          //     "You can only send messages to your connections!",
+          //   );
+          // }
 
           let chat = await Chat.findOne({
             // $all means all the people here should be the participants of the chat.
